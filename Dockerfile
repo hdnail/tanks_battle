@@ -1,16 +1,7 @@
 FROM php:8.2.11-fpm-bullseye
 
-# nginx
-RUN apt-get -y update && apt-get -y install --no-install-recommends nginx
-
-# nginx config
-COPY ./dockerfiles/site.conf /etc/nginx/sites-available/site.conf
-COPY ./dockerfiles/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
-RUN cd /etc/nginx/sites-enabled && rm -f * && ln -s /etc/nginx/sites-available/site.conf default
-
-# Phalcon installation.
 RUN apt-get -y update \
-    && apt-get -y install software-properties-common libpcre3-dev gpg git wget \
+    && apt-get -y install --no-install-recommends software-properties-common nginx libpcre3-dev gpg git wget \
     && pecl install zephir_parser \
     && echo "extension=zephir_parser.so" >> /usr/local/etc/php/conf.d/zephir_parser.ini \
     && cd /tmp \
@@ -33,14 +24,18 @@ RUN apt-get -y update \
     && make && make install \
     && echo "extension=phalcon.so" >> /usr/local/etc/php/conf.d/30-phalcon.ini
 
+# nginx config
+COPY ./dockerfiles/site.conf /etc/nginx/sites-available/site.conf
+COPY ./dockerfiles/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
+RUN cd /etc/nginx/sites-enabled && rm -f * && ln -s /etc/nginx/sites-available/site.conf default
+
 # Entrypoint.
 COPY ./dockerfiles/entrypoint.sh /entrypoint.sh
 RUN chmod a+x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-EXPOSE 80
+EXPOSE 8000
 CMD ["nginx", "-g", "daemon off;"]
-
 
 # files
 # /usr/local/include/php/

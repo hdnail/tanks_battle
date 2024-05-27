@@ -4,6 +4,6 @@ services:
     image: "php-tank"
     container_name: "php-tank"
     ports:
-      - "8088:80"
+      - "8088:8000"
     volumes:
       - ./src:/var/www/html/
