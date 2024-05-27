@@ -1,0 +1,10 @@
+version: '3.1'
+services:
+  server:
+    build: .
+    image: "php-tank"
+    container_name: "php-tank"
+    ports:
+      - "8088:80"
+    volumes:
+      - ./src:/var/www/html/
