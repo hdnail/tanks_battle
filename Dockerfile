@@ -1,23 +1,17 @@
-FROM php:7.4.33-fpm-bullseye
+FROM php:8.2.11-fpm-bullseye
 
-RUN apt-get -y update \
-    && apt-get -y install --no-install-recommends nginx
+# nginx
+RUN apt-get -y update && apt-get -y install --no-install-recommends nginx
 
-# COPY ./dockerfiles/nginx.conf /etc/nginx/sites-available/nginx.conf
-COPY ./dockerfiles/default.conf /etc/nginx/sites-available/default.conf
+# nginx config
+COPY ./dockerfiles/site.conf /etc/nginx/sites-available/site.conf
+COPY ./dockerfiles/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
+RUN cd /etc/nginx/sites-enabled && rm -f * && ln -s /etc/nginx/sites-available/site.conf default
+
+# Entrypoint.
 COPY ./dockerfiles/entrypoint.sh /entrypoint.sh
-
-RUN cd /etc/nginx/sites-enabled && rm -f * \
-    && ln -s /etc/nginx/sites-available/default.conf default
-
 RUN chmod a+x /entrypoint.sh
-
 ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 80
-# CMD ["tail", "-f", "/dev/null"]
 CMD ["nginx", "-g", "daemon off;"]
-
-# docker-compose stop && docker-compose down && docker-compose build && docker-compose up
-
-# apt-get install software-properties-common
