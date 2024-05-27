@@ -1,0 +1,14 @@
+{
+  "type": "project",
+  "description": "Tank Attack",
+  "require": {
+    "php": ">=8.0",
+    "mongodb/mongodb": "^1.19",
+    "leroy-merlin-br/mongolid": "^3.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Models\\": "models/"
+    }
+  }
+}

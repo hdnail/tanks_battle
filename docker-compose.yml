@@ -7,3 +7,10 @@ services:
       - "8088:8000"
     volumes:
       - ./src:/var/www/html/
+  mongodb:
+    image: "mongo:7.0"
+    container_name: "mongodb"
+    volumes:
+      - ./mongodb-data:/data/db
+    ports:
+      - "27017:27017"

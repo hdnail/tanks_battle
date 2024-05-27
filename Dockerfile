@@ -24,6 +24,17 @@ RUN apt-get -y update \
     && make && make install \
     && echo "extension=phalcon.so" >> /usr/local/etc/php/conf.d/30-phalcon.ini
 
+# Composer and MongoDB
+RUN cd /root \
+    && apt-get -y update && apt-get install -y zlib1g-dev libzip-dev unzip libcurl4-openssl-dev pkg-config libssl-dev \
+    && pecl install zip \
+    && echo "extension=zip.so" >> /usr/local/etc/php/conf.d/zip.ini \
+    && wget https://raw.githubusercontent.com/composer/getcomposer.org/cd8ca011326ab9a17a555846c69461c1d53c1895/web/installer -O - -q | php -- --quiet \
+    && chmod a+x composer.phar \
+    && mv composer.phar /usr/local/bin/composer \
+    && pecl install mongodb  \
+    && echo "extension=mongodb.so" >> /usr/local/etc/php/conf.d/mongodb.ini
+
 # nginx config
 COPY ./dockerfiles/site.conf /etc/nginx/sites-available/site.conf
 COPY ./dockerfiles/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
@@ -34,8 +45,9 @@ COPY ./dockerfiles/entrypoint.sh /entrypoint.sh
 RUN chmod a+x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
+# Clean
+RUN rm -f /var/www/html/index.nginx-debian.html \
+    && apt-get -y clean && apt-get -y autoclean && apt-get -y autoremove
+
 EXPOSE 8000
 CMD ["nginx", "-g", "daemon off;"]
-
-# files
-# /usr/local/include/php/
