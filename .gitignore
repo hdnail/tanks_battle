@@ -1,3 +1,4 @@
 .idea
 /mongodb-data
 /src/vendor
+/redis-data

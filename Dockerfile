@@ -35,6 +35,13 @@ RUN cd /root \
     && pecl install mongodb  \
     && echo "extension=mongodb.so" >> /usr/local/etc/php/conf.d/mongodb.ini
 
+# Redis
+RUN cd /root \
+    && apt-get -y update \
+    && apt-get -y install libzstd-dev \
+    && pecl install redis \
+    && echo "extension=redis.so" >> /usr/local/etc/php/conf.d/redis.ini
+
 # nginx config
 COPY ./dockerfiles/site.conf /etc/nginx/sites-available/site.conf
 COPY ./dockerfiles/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
