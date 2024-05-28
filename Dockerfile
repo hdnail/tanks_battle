@@ -45,6 +45,7 @@ RUN cd /root \
 # nginx config
 COPY ./dockerfiles/site.conf /etc/nginx/sites-available/site.conf
 COPY ./dockerfiles/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
+COPY ./dockerfiles/phpextra.ini /usr/local/etc/php/conf.d/phpextra.ini
 RUN cd /etc/nginx/sites-enabled && rm -f * && ln -s /etc/nginx/sites-available/site.conf default
 
 # Entrypoint.
